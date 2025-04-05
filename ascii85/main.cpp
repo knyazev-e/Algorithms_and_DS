@@ -67,6 +67,9 @@ int main(int argc, char* argv[]) {
         input.push_back(byte);
     }
 
+    std::cout << input.length() << std::endl;
+    std::cout << "first symbol:" << input[0] << "\nlast symbol:" << input[input.length() - 1] << static_cast<int>(static_cast<char>(input[input.length() - 1])) << std::endl;
+
     // decoding/encoding process
     if (encoding_mode) {
         size_t padding = (4 - (input.length() % 4)) % 4;
@@ -75,8 +78,9 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < input.length(); i+=4) {
             output += encode(input.substr(i, 4));
         }
-        padding = padding * 5/4;
-        output.erase(output.length() - padding, padding);
+        std::cout << output.length() << std::endl;
+        output.erase(output.length() - padding - 1, padding);
+        std::cout << output.length() << std::endl;
     }
 
     else {
@@ -94,7 +98,7 @@ int main(int argc, char* argv[]) {
                 i += 5;
             }
         }
-        output.erase(output.length() - padding, padding);
+        output.erase(output.length() - padding - 1, padding);
     }
 
     std::cout << output << std::endl;
