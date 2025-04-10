@@ -18,11 +18,11 @@ jobs:
     - name: chmod
       run: |
         cd ascii85
-        chmod +x ./run_test
+        chmod +x ./tests
     - name: tests
       run: |
         cd ascii85
-        ./run_test
+        ./tests
     - name: clean
       run: |
         cd ascii85
