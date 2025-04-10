@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdint>
 
 
 const std::string alphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]) {
     std::cout << input.length() << std::endl;
     std::cout << "first symbol:" << input[0] << "\nlast symbol:" << input[input.length() - 1] << static_cast<int>(static_cast<char>(input[input.length() - 1])) << std::endl;
 
-    // decoding/encoding process
+    // encoding process
     if (encoding_mode) {
         size_t padding = (4 - (input.length() % 4)) % 4;
         input.append(padding, '\0');
@@ -83,7 +84,12 @@ int main(int argc, char* argv[]) {
         std::cout << output.length() << std::endl;
     }
 
+    // decoding process
     else {
+        if (static_cast<int>(static_cast<char>(input[input.length() - 1])) == 10) {
+            input.erase(input.length() - 1, 1);
+        }
+
         size_t padding = (5 - (input.length() % 5)) % 5;
         input.append(padding, 'u');
 
