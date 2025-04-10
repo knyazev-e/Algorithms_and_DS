@@ -12,8 +12,18 @@ jobs:
     - name: dependencies
       run: sudo apt-get install -y build-essential libgtest-dev
     - name: make
-      run: make
+      run: |
+        cd ascii85
+        make
     - name: chmod
-      run: chmod +x ./run_test
+      run: |
+        cd ascii85
+        chmod +x ./run_test
     - name: tests
-      run: ./run_test
+      run: |
+        cd ascii85
+        ./run_test
+    - name: clean
+      run: |
+        cd ascii85
+        make clean
