@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdint>
+#include <vector>
 
 
 const std::string alphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
@@ -61,52 +62,62 @@ int main(int argc, char* argv[]) {
     }
 
     // reading the input
-    std::string output = "";
-    std::string input;
+    std::vector<char> output;
+    std::vector<char> input;
     char byte;
     while(std::cin.get(byte)) {
         input.push_back(byte);
     }
 
-    std::cout << input.length() << std::endl;
-    std::cout << "first symbol:" << input[0] << "\nlast symbol:" << input[input.length() - 1] << static_cast<int>(static_cast<char>(input[input.length() - 1])) << std::endl;
+    std::cout << input.size() << std::endl;
+    std::cout << "first symbol:" << input[0] << "\nlast symbol:" << input[input.size() - 1] << static_cast<int>(input[input.size() - 1]) << std::endl;
 
     // encoding process
     if (encoding_mode) {
-        size_t padding = (4 - (input.length() % 4)) % 4;
-        input.append(padding, '\0');
+        size_t padding = (4 - (input.size() % 4)) % 4;
+        input.resize(input.size() + padding, '\0');
 
-        for (int i = 0; i < input.length(); i+=4) {
-            output += encode(input.substr(i, 4));
+        for (int i = 0; i < input.size(); i+=4) {
+            std::string chunk(input.begin() + i, input.begin() + i + 4);
+            for (char character : encode(chunk)) {
+                output.push_back(character);
+            }
         }
-        std::cout << output.length() << std::endl;
-        output.erase(output.length() - padding - 1, padding);
-        std::cout << output.length() << std::endl;
+        std::cout << output.size() << std::endl;
+        output.resize(output.size() - padding);
+        std::cout << output.size() << std::endl;
     }
 
     // decoding process
     else {
-        if (static_cast<int>(static_cast<char>(input[input.length() - 1])) == 10) {
-            input.erase(input.length() - 1, 1);
+        if (static_cast<int>(input[input.size() - 1]) == 10) {
+            input.erase(input.begin() + input.size() - 1);
         }
 
-        size_t padding = (5 - (input.length() % 5)) % 5;
-        input.append(padding, 'u');
+        size_t padding = (5 - (input.size() % 5)) % 5;
+        input.resize(input.size() + padding, 'u');
 
         int i = 0;
-        while (i < input.length()) {
+        while (i < input.size()) {
             if (input[i] == 'z') {
-                output += decode("z");
+                for (char character : decode("z")) {
+                    output.push_back(character);
+                }
                 i += 1;
             }
             else {
-                output += decode(input.substr(i, 5));
+                std::string chunk(input.begin() + i, input.begin() + i + 5);
+                for (char character : decode(chunk))  {
+                    output.push_back(character);
+                }
                 i += 5;
             }
         }
-        output.erase(output.length() - padding - 1, padding);
+        output.resize(output.size() - padding);
     }
 
-    std::cout << output << std::endl;
-    std::cout << "the code finished executing" << std::endl;
+    for (char c : output) {
+        std::cout << c;
+    }
+    std::cout << "\nthe code finished executing" << std::endl;
 }
