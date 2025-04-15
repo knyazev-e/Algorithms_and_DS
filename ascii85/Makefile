@@ -2,29 +2,23 @@ TEST_TARGET = tests
 PROJECT_TARGET = ascii85
 
 CXX = g++
-C_FLAGS = -std=c++17 -I(GTEST_DIR)/include
-L_FLAGS = -L$(GTEST_DIR)/lib -lgtest -lgtest_main -pthread
+C_FLAGS = -std=c++17
+L_FLAGS = -lgtest -lgtest_main -lpthread
 
 PROJECT_SOURCE = main.cpp
 TEST_SOURCE = test.cpp
 
-PROJECT_OBJ = $(PROJECT_SOURCE:.cpp=.o)
-TEST_OBJ = $(TEST_SOURCE:.cpp=.o)
-
 all: $(PROJECT_TARGET) $(TEST_TARGET)
 
 $(PROJECT_TARGET): $(PROJECT_SOURCE)
-	$(CXX) -o $@ $^
+	$(CXX) $(C_FLAGS) -o $(PROJECT_TARGET) $(PROJECT_SOURCE)
 
 $(TEST_TARGET): $(TEST_SOURCE)
-	$(CXX) -o $@ $^ $(L_FLAGS)
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(C_FLAGS) -o $(TEST_TARGET) $(TEST_SOURCE) $(L_FLAGS)
 
 
 clean:
-	rm -f $(PROJECT_OBJ) $(TEST_OBJ) $(PROJECT_TARGET) $(TEST_TARGET)
+	rm -f $(PROJECT_TARGET) $(TEST_TARGET) *.o
 
 test: $(TEST_TARGET)
 	./$(TEST_TARGET)
