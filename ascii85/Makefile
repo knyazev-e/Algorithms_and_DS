@@ -18,7 +18,7 @@ $(TEST_TARGET): $(TEST_SOURCE)
 
 
 clean:
-	rm -f $(PROJECT_TARGET) $(TEST_TARGET) *.o
+	rm -f $(PROJECT_TARGET) $(TEST_TARGET) *.o *.bin *.a85
 
 test: $(TEST_TARGET)
 	./$(TEST_TARGET)

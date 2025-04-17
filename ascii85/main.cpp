@@ -24,16 +24,22 @@ int main(int argc, char* argv[]) {
 
     // encoding process
     if (encoding_mode) {
-        size_t padding = (4 - (input.size() % 4)) % 4;
-        input.resize(input.size() + padding, '\0');
+        size_t chunk_count = input.size() / 4;
+        size_t remaining = input.size() % 4;
 
-        for (int i = 0; i < input.size(); i+=4) {
+        for (int i = 0; i < chunk_count*4; i+=4) {
             std::string chunk(input.begin() + i, input.begin() + i + 4);
-            for (char character : encode(chunk)) {
-                output.push_back(character);
+            for (char c : encode(chunk)) {
+                output.push_back(c);
             }
         }
-        output.resize(output.size() - padding);
+
+        if (remaining > 0) {
+            std::string chunk(input.end() - remaining, input.end());
+            for (char c : encode(chunk)) {
+                output.push_back(c);
+            }
+        }
     }
 
     // decoding process
@@ -42,30 +48,31 @@ int main(int argc, char* argv[]) {
             input.erase(input.begin() + input.size() - 1);
         }
 
-        size_t padding = (5 - (input.size() % 5)) % 5;
-        input.resize(input.size() + padding, 'u');
+        size_t chunk_count = input.size() / 5;
+        size_t remaining = input.size() % 5;
 
         int i = 0;
         while (i < input.size()) {
             if (input[i] == 'z') {
-                for (char character : decode("z")) {
-                    output.push_back(character);
+                for (char c : decode("z")) {
+                    output.push_back(c);
                 }
                 i += 1;
             }
             else {
-                std::string chunk(input.begin() + i, input.begin() + i + 5);
-                for (char character : decode(chunk))  {
-                    output.push_back(character);
+                size_t chunk_len = std::min(static_cast<size_t>(5), input.size() - i);
+                std::string chunk(input.begin() + i, input.begin() + i + chunk_len);
+                for (char c : decode(chunk))  {
+                    output.push_back(c);
                 }
-                i += 5;
+                i += chunk_len;
             }
         }
-        output.resize(output.size() - padding);
     }
 
     for (char c : output) {
         std::cout << c;
     }
-    std::cout << "\n";
+
+    return 0;
 }
