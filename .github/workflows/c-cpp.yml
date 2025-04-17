@@ -1,12 +1,6 @@
 name: C/C++ CI
 
-on:
-    push:
-        paths:
-        - 'ascii85/**'
-    pull_request:
-        paths:
-        - 'ascii85/**'
+on: [push, pull_request]
 
 jobs:
   build:
@@ -19,18 +13,13 @@ jobs:
       run: sudo apt-get install -y build-essential libgtest-dev
     - name: make
       run: make
-      working-directory: ascii85
     - name: chmod
       run: chmod +x ./tests
-      working-directory: ascii85
     - name: unit_tests
       run: ./tests
-      working-directory: ascii85
     - name: random_tests
       run: ./random_tests.sh
-      working-directory: ascii85
     - name: clean
       run: make clean
-      working-directory: ascii85
 
 
